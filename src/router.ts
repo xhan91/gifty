@@ -16,7 +16,7 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "giftList" */ ''),
+      component: () => import(/* webpackChunkName: "giftList" */ './views/About.vue'),
     },
     {
       path: '/about',
@@ -29,7 +29,7 @@ export default new Router({
     {
       path: '/gift-list/:listId',
       name: 'giftList',
-      component: () => import(/* webpackChunkName: "giftList" */ ''),
+      component: () => import(/* webpackChunkName: "giftList" */ './views/About.vue'),
     },
   ],
 });
