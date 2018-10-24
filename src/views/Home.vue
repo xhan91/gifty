@@ -1,16 +1,21 @@
 <template>
-  <div class="home">
-    {{ user }}
+  <div>
+    <Breadcrumb style="text-align: left; padding: 10px">
+      <BreadcrumbItem>Home</BreadcrumbItem>
+    </Breadcrumb>
+    <Card :dis-hover="true">
+      <NewListCard />
+    </Card>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import NewListCard from '@/components/NewListCard.vue'; // @ is an alias to /src
 
 @Component({
   components: {
-    HelloWorld,
+    NewListCard,
   },
 })
 export default class Home extends Vue {
