@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts">
+import { db } from '@/main';
 import { Component, Vue } from 'vue-property-decorator';
 import NewListCard from '@/components/NewListCard.vue'; // @ is an alias to /src
 
@@ -24,6 +25,8 @@ export default class Home extends Vue {
   get user() {
     return this.$store.getters.getUser;
   }
+
+  
 
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <Card class="card">
-    <Row class="card-content" type="flex" justify="center" align="center">
+    <Row class="card-content" type="flex" justify="center">
       <Col>
         <Row>
           <Icon type="md-add" size="48"/>
