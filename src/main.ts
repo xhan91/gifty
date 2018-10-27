@@ -14,17 +14,29 @@ import './plugins/iview.js';
 Vue.config.productionTip = false;
 Vue.use(VueFire);
 
+let app: object;
+const init = () => {
+  app = new Vue({
+    router,
+    store,
+    render: (h) => h(App),
+  }).$mount('#app');
+};
+
 firebase.initializeApp(config);
-firebase.auth().onAuthStateChanged((user) => {
-  store.dispatch('setUser', user);
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!app) {
+    if (user) {
+      await store.dispatch('setUser', user);
+      init();
+    } else {
+      init();
+    }
+  }
 });
 const db = firebase.firestore();
-
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount('#app');
+const dbSettings = {timestampsInSnapshots: true};
+db.settings(dbSettings);
 
 export {
   db,
