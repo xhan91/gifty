@@ -15,7 +15,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
-export default class ListCard extends Vue {
+export default class GiftCard extends Vue {
   
   // props
   @Prop(Object) listData: any

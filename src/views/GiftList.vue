@@ -1,6 +1,12 @@
 <template>
   <div class="giftList">
-    <h1>{{listData}}</h1>
+    <Breadcrumb style="text-align: left; padding: 10px">
+      <BreadcrumbItem>Home</BreadcrumbItem>
+      <BreadcrumbItem v-if="listData">{{ listData.name }}</BreadcrumbItem>
+    </Breadcrumb>
+    <Card :dis-hover="true">
+      {{listData}}
+    </Card>
   </div>
 </template>
 

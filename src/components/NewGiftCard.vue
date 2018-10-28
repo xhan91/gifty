@@ -56,7 +56,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import IGiftLists from '@/interfaces/IGiftLists';
 
 @Component
-export default class NewListCard extends Vue {
+export default class NewGiftCard extends Vue {
   
   // data
   isActive = false
