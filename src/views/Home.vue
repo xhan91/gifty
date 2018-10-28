@@ -4,8 +4,9 @@
       <BreadcrumbItem>Home</BreadcrumbItem>
     </Breadcrumb>
     <Card :dis-hover="true">
-      <NewListCard />
-      d: {{userData}}
+      <NewListCard 
+        :userDataRef="userDateRef" 
+      />
     </Card>
   </div>
 </template>
@@ -22,23 +23,21 @@ import NewListCard from '@/components/NewListCard.vue'; // @ is an alias to /src
   },
   firestore() {
     return {
-      userData: this.user ? db.collection('users').doc(this.user.uid) : db.collection('users').doc('1'),
+      userData: db.collection('users').doc(this.user.uid), // dataRef
     }
   }
 })
 export default class Home extends Vue {
 
-  userData = null
-
+  userData: DocumentReference | null = null
+  
   // computed
   get user() {
     return this.$store.getters.getUser;
   }
 
-  beforeMount() {
-    if (!this.userData) {
-
-    }
+  get userDateRef() {
+    return this.$firestoreRefs.userData;
   }
 
 }

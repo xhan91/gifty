@@ -27,9 +27,9 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
     {
-      path: '/gift-list/:listId',
+      path: '/gift-list/:userId/:listId',
       name: 'giftList',
-      component: () => import(/* webpackChunkName: "giftList" */ './views/About.vue'),
+      component: () => import(/* webpackChunkName: "giftList" */ './views/GiftList.vue'),
     },
   ],
 });

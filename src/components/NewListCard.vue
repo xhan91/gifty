@@ -1,18 +1,104 @@
 <template>
-  <Card class="card">
-    <Row class="card-content" type="flex" justify="center">
-      <Col>
-        <Row>
-          <Icon type="md-add" size="48"/>
-        </Row>
-        <br>
-        <Row>
-          <div>Create new gift list</div>
-        </Row>
-      </Col>
-    </Row>
-  </Card>
+  <span @click="isActive = true">
+    <Card class="card">
+      <Row class="card-content" type="flex" justify="center">
+        <Col>
+          <Row>
+            <Icon type="md-add" size="48"/>
+          </Row>
+          <br>
+          <Row>
+            <div>Create new gift list</div>
+          </Row>
+        </Col>
+      </Row>
+    </Card>
+    <Modal
+      v-model="isActive"
+      title="New List"
+      :mask-closable="false"
+      :loading="true"
+      @on-ok="createNewList"
+      @on-cancel="resetForm"
+      ref="modalInstance"
+    >
+      <div style="margin-bottom: 15px">
+        <p>Please provide the details of your new list below.</p>
+        <p v-if="err" style="color: red">
+          {{ err }}
+        </p>
+      </div>
+      <Input 
+        v-model="name" 
+        placeholder="Event Name*" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="description" 
+        placeholder="Description(optional)"
+        size="large"
+        type="textarea" 
+        :autosize="{minRows: 2,maxRows: 5}"
+      ></Input>
+      <DatePicker
+        v-model="eventDate"
+        type="date"
+        placeholder="Event Date*"
+        style="width: 100%"
+      ></DatePicker>
+    </Modal>
+  </span>
 </template>
+
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator';
+
+@Component
+export default class NewListCard extends Vue {
+  
+  // data
+  isActive = false
+  name = ''
+  description = ''
+  eventDate:Date | null = null
+  err = ''
+
+  // props
+  @Prop(Object) userDataRef: any
+
+  // computed
+  get user() {
+    return this.$store.getters.getUser;
+  }
+
+  // methods
+  createNewList() {
+    if (!this.name || !this.eventDate) {
+      this.err = 'Please fill the fields with *.';
+      this.$refs.modalInstance.buttonLoading = false;
+    }
+    const newListId = + new Date()
+    console.log(this.userDataRef);
+    this.userDataRef.giftLists.child('giftLists').set({
+      id: newListId,
+      name: this.name,
+      description: this.description,
+      eventDate: this.eventDate
+    });
+    this.isActive = false;
+    // this.$router.push(`/gift-list/${this.user.uid}/${newListId}`);
+  }
+
+  resetForm() {
+    this.name = '';
+    this.description = '';
+    this.eventDate = null;
+    this.err = '';
+  }
+
+}
+</script>
 
 <style lang="stylus" scoped>
   .card
@@ -33,4 +119,7 @@
     flex-direction column
     font-size 16px  
     color #2d8cf0
+
+  .ivu-input-wrapper
+    margin-bottom 15px
 </style>
