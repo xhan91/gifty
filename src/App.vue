@@ -2,7 +2,7 @@
   <div id="app">
     <Layout>
       <Header>
-        <Menu mode="horizontal" theme="dark" active-name="1" class="menu">
+        <Menu mode="horizontal" theme="dark" active-name="1" class="menu" v-if="user">
           <MenuItem name="home">
             <router-link to="/">Home</router-link>
           </MenuItem>

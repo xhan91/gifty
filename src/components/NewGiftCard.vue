@@ -8,7 +8,7 @@
           </Row>
           <br>
           <Row>
-            <div>Create new gift list</div>
+            <div>Create new gift</div>
           </Row>
         </Col>
       </Row>

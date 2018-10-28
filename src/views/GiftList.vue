@@ -4,8 +4,25 @@
       <BreadcrumbItem>Home</BreadcrumbItem>
       <BreadcrumbItem v-if="listData">{{ listData.name }}</BreadcrumbItem>
     </Breadcrumb>
-    <Card :dis-hover="true">
-      {{listData}}
+    <Card :dis-hover="true" style="text-align: left">
+      <div 
+        v-if="user && user.uid == listOwnerId"
+        style="margin-bottom: 20px;"
+      >
+        <NewGiftCard
+          style="margin-left: 10px; text-align: center"
+        />
+      </div>
+      <div 
+        v-if="listData && listData.gifts"
+      >
+        <!-- <GiftCard
+          style="margin-left: 10px; text-align: center"
+          v-for="listData in Object.values(userData.giftLists)"
+          :key="listData.id"
+          :listData="listData"
+        /> -->
+      </div>
     </Card>
   </div>
 </template>
@@ -14,13 +31,24 @@
 import { db } from '@/main';
 import { DocumentReference } from 'firebase/firestore';
 import { Component, Vue } from 'vue-property-decorator';
+import NewGiftCard from '@/components/NewGiftCard.vue'; // @ is an alias to /src
+import GiftCard from '@/components/GiftCard.vue';
 
-@Component
+@Component<GiftList>({
+  components: {
+    NewGiftCard,
+    GiftCard,
+  },
+})
 export default class GiftList extends Vue {
 
   userData: any = null
 
   // computed
+  get user() {
+    return this.$store.getters.getUser;
+  }
+
   get listId() {
     return this.$route.params.listId;
   }
@@ -29,8 +57,12 @@ export default class GiftList extends Vue {
     return this.userData ? this.userData.giftLists[this.listId] : null;
   }
 
+  get listOwnerId() {
+    return this.$route.params.userId;
+  }
+
   created() {
-    db.collection('users').doc(this.$route.params.userId).get().then((doc) => {
+    db.collection('users').doc(this.listOwnerId).get().then((doc) => {
       if (doc.exists) {
         this.userData = doc.data();
       }
