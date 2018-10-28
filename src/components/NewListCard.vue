@@ -57,16 +57,15 @@ import IGiftLists from '@/interfaces/IGiftLists';
 
 @Component
 export default class NewListCard extends Vue {
-  
-  // data
-  isActive = false
-  name = ''
-  description = ''
-  eventDate:Date | null = null
-  err = ''
-
   // props
-  @Prop(Object) userDataRef: any
+  @Prop(Object) private userDataRef: any;
+
+  // data
+  private isActive = false;
+  private name = '';
+  private description = '';
+  private eventDate: Date | null = null;
+  private err = '';
 
   // computed
   get user() {
@@ -74,7 +73,7 @@ export default class NewListCard extends Vue {
   }
 
   // methods
-  async createNewList() {
+  private async createNewList() {
     if (!this.name || !this.eventDate) {
       this.err = 'Please fill the fields with *.';
       this.$refs.modalInstance.buttonLoading = false;
@@ -98,7 +97,7 @@ export default class NewListCard extends Vue {
     this.$router.push(link);
   }
 
-  resetForm() {
+  private resetForm() {
     this.name = '';
     this.description = '';
     this.eventDate = null;

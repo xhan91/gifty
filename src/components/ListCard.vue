@@ -16,12 +16,12 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
 export default class ListCard extends Vue {
-  
+
   // props
-  @Prop(Object) listData: any
+  @Prop(Object) private listData: any;
 
   // methods
-  goToList() {
+  private goToList() {
     this.$router.push(this.listData.link);
   }
 

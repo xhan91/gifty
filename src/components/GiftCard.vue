@@ -1,9 +1,9 @@
 <template>
-  <span @click="goToList">
+  <span>
     <Card class="card">
       <Row class="card-content" type="flex" justify="center">
         <h1>
-          {{listData.name}}
+          {{gift.name}}
         </h1>
       </Row>
     </Card>
@@ -16,14 +16,8 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 
 @Component
 export default class GiftCard extends Vue {
-  
   // props
-  @Prop(Object) listData: any
-
-  // methods
-  goToList() {
-    this.$router.push(this.listData.link);
-  }
+  @Prop(Object) private gift: any;
 
 }
 </script>

@@ -23,30 +23,48 @@
       ref="modalInstance"
     >
       <div style="margin-bottom: 15px">
-        <p>Please provide the details of your new list below.</p>
+        <p>Please provide the details of your new gift below.</p>
         <p v-if="err" style="color: red">
           {{ err }}
         </p>
       </div>
       <Input 
         v-model="name" 
-        placeholder="Event Name*" 
+        placeholder="Name of the gift*" 
         size="large"
         :clearable="true"
       ></Input>
       <Input 
         v-model="description" 
-        placeholder="Description(optional)"
+        placeholder="Description"
         size="large"
         type="textarea" 
         :autosize="{minRows: 2,maxRows: 5}"
       ></Input>
-      <DatePicker
-        v-model="eventDate"
-        type="date"
-        placeholder="Event Date*"
-        style="width: 100%"
-      ></DatePicker>
+      <Input 
+        v-model="price" 
+        placeholder="Price*" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="whereToBuy" 
+        placeholder="Where to buy" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="link" 
+        placeholder="Link to the gift" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="image" 
+        placeholder="Image of the gift" 
+        size="large"
+        :clearable="true"
+      ></Input>
     </Modal>
   </span>
 </template>
@@ -57,16 +75,20 @@ import IGiftLists from '@/interfaces/IGiftLists';
 
 @Component
 export default class NewGiftCard extends Vue {
-  
   // data
-  isActive = false
-  name = ''
-  description = ''
-  eventDate:Date | null = null
-  err = ''
+  private isActive = false;
+  private name = '';
+  private description = '';
+  private price = '';
+  private whereToBuy = '';
+  private link = '';
+  private image = '';
+
+  private err = '';
 
   // props
-  @Prop(Object) userDataRef: any
+  @Prop(Object) private userDataRef: any;
+  @Prop(String) private listId?: string;
 
   // computed
   get user() {
@@ -74,34 +96,40 @@ export default class NewGiftCard extends Vue {
   }
 
   // methods
-  async createNewList() {
-    if (!this.name || !this.eventDate) {
+  private async createNewList() {
+    if (!this.name || !this.price) {
       this.err = 'Please fill the fields with *.';
       this.$refs.modalInstance.buttonLoading = false;
       return;
     }
 
-    const newListId = String(+ new Date());
-    const giftLists: IGiftLists = {};
-    const link = `/gift-list/${this.user.uid}/${newListId}`;
-    giftLists[newListId] = {
-      id: newListId,
+    const newGiftId = String(+ new Date());
+    const gifts = {};
+    gifts[newGiftId] = {
+      id: newGiftId,
       name: this.name,
       description: this.description,
-      eventDate: this.eventDate,
-      link,
+      price: this.price,
+      whereToBuy: this.whereToBuy,
+      link: this.link,
+      image: this.image,
     };
+    const giftLists: IGiftLists = {};
+    giftLists[this.listId!] = { gifts };
     const data = { giftLists };
 
     await this.userDataRef.set(data, {merge: true});
     this.isActive = false;
-    this.$router.push(link);
+    this.$emit('reloadData');
   }
 
-  resetForm() {
+  private resetForm() {
     this.name = '';
     this.description = '';
-    this.eventDate = null;
+    this.price = '';
+    this.whereToBuy = '';
+    this.link = '';
+    this.image = '';
     this.err = '';
   }
 

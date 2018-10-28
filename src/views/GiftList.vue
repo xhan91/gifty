@@ -11,17 +11,20 @@
       >
         <NewGiftCard
           style="margin-left: 10px; text-align: center"
+          :userDataRef="userDataRef"
+          :listId="listId"
+          @reloadData="load"
         />
       </div>
       <div 
         v-if="listData && listData.gifts"
       >
-        <!-- <GiftCard
+        <GiftCard
           style="margin-left: 10px; text-align: center"
-          v-for="listData in Object.values(userData.giftLists)"
-          :key="listData.id"
-          :listData="listData"
-        /> -->
+          v-for="gift in Object.values(listData.gifts)"
+          :key="gift.id"
+          :gift="gift"
+        />
       </div>
     </Card>
   </div>
@@ -29,7 +32,6 @@
 
 <script lang="ts">
 import { db } from '@/main';
-import { DocumentReference } from 'firebase/firestore';
 import { Component, Vue } from 'vue-property-decorator';
 import NewGiftCard from '@/components/NewGiftCard.vue'; // @ is an alias to /src
 import GiftCard from '@/components/GiftCard.vue';
@@ -42,7 +44,7 @@ import GiftCard from '@/components/GiftCard.vue';
 })
 export default class GiftList extends Vue {
 
-  userData: any = null
+  private userData: any = null;
 
   // computed
   get user() {
@@ -61,12 +63,20 @@ export default class GiftList extends Vue {
     return this.$route.params.userId;
   }
 
-  created() {
-    db.collection('users').doc(this.listOwnerId).get().then((doc) => {
+  get userDataRef() {
+    return db.collection('users').doc(this.listOwnerId);
+  }
+
+  private load() {
+    this.userDataRef.get().then((doc) => {
       if (doc.exists) {
         this.userData = doc.data();
       }
     }).catch();
+  }
+
+  private created() {
+    this.load();
   }
 
 }

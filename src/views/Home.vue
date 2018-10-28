@@ -26,7 +26,6 @@
 
 <script lang="ts">
 import { db } from '@/main';
-import { DocumentReference } from 'firebase/firestore';
 import { Component, Vue } from 'vue-property-decorator';
 import NewListCard from '@/components/NewListCard.vue'; // @ is an alias to /src
 import ListCard from '@/components/ListCard.vue';
@@ -39,8 +38,7 @@ import ListCard from '@/components/ListCard.vue';
 })
 export default class Home extends Vue {
 
-  userData: any = null
-  
+  private userData: any = null;
   // computed
   get user() {
     return this.$store.getters.getUser;
@@ -50,7 +48,7 @@ export default class Home extends Vue {
     return db.collection('users').doc(this.user.uid);
   }
 
-  created() {
+  private created() {
     this.userDataRef.get().then((doc) => {
       if (doc.exists) {
         this.userData = doc.data();

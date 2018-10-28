@@ -19,7 +19,7 @@ export default class Login extends Vue {
       this.$store.dispatch('setUser', res.user).then(() => {
         this.$router.push('/');
       });
-    }).catch((err) => {});
+    }).catch();
   }
 }
 </script>
