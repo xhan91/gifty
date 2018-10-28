@@ -9,16 +9,10 @@ import { db } from '@/main';
 import { DocumentReference } from 'firebase/firestore';
 import { Component, Vue } from 'vue-property-decorator';
 
-@Component<GiftList>({
-  firestore() {
-    return {
-      userData: db.collection('users').doc(this.$route.params.userId), // dataRef
-    }
-  }
-})
+@Component
 export default class GiftList extends Vue {
 
-  userData: DocumentReference | null = null
+  userData: any = null
 
   // computed
   get listId() {
@@ -27,6 +21,14 @@ export default class GiftList extends Vue {
 
   get listData() {
     return this.userData ? this.userData.giftLists[this.listId] : null;
+  }
+
+  created() {
+    db.collection('users').doc(this.$route.params.userId).get().then((doc) => {
+      if (doc.exists) {
+        this.userData = doc.data();
+      }
+    }).catch();
   }
 
 }

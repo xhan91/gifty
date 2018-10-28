@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import IGiftLists from '@/interfaces/IGiftLists';
 
 @Component
 export default class NewListCard extends Vue {
@@ -73,21 +74,25 @@ export default class NewListCard extends Vue {
   }
 
   // methods
-  createNewList() {
+  async createNewList() {
     if (!this.name || !this.eventDate) {
       this.err = 'Please fill the fields with *.';
       this.$refs.modalInstance.buttonLoading = false;
     }
-    const newListId = + new Date()
-    console.log(this.userDataRef);
-    this.userDataRef.giftLists.child('giftLists').set({
+
+    const newListId = String(+ new Date());
+    const giftLists: IGiftLists = {};
+    giftLists[newListId] = {
       id: newListId,
       name: this.name,
       description: this.description,
       eventDate: this.eventDate
-    });
+    };
+    const data = { giftLists };
+
+    await this.userDataRef.set(data, {merge: true});
     this.isActive = false;
-    // this.$router.push(`/gift-list/${this.user.uid}/${newListId}`);
+    this.$router.push(`/gift-list/${this.user.uid}/${newListId}`);
   }
 
   resetForm() {
