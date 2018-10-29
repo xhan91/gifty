@@ -5,6 +5,9 @@
         <h1>
           {{gift.name}}
         </h1>
+        <p class="price">
+          {{gift.price}}
+        </p>
       </Row>
     </Card>
   </span>
@@ -46,4 +49,7 @@ export default class GiftCard extends Vue {
 
   .ivu-input-wrapper
     margin-bottom 15px
+
+  .price
+    color #cdcdcd
 </style>

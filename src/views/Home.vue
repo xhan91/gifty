@@ -3,7 +3,7 @@
     <Breadcrumb style="text-align: left; padding: 10px">
       <BreadcrumbItem>Home</BreadcrumbItem>
     </Breadcrumb>
-    <Card :dis-hover="true" v-if="userData" style="text-align: left">
+    <Card :dis-hover="true" style="text-align: left">
       <div style="margin-bottom: 20px;">
         <NewListCard
           style="margin-left: 10px; text-align: center"
@@ -11,7 +11,7 @@
         />
       </div>
       <div 
-        v-if="userData.giftLists"
+        v-if="userData && userData.giftLists"
       >
         <ListCard
           style="margin-left: 10px; text-align: center"
@@ -50,8 +50,11 @@ export default class Home extends Vue {
 
   private created() {
     this.userDataRef.get().then((doc) => {
+      console.log(doc);
       if (doc.exists) {
         this.userData = doc.data();
+      } else {
+        this.userDataRef.set({ giftLists: {} });
       }
     }).catch();
   }
