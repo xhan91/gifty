@@ -24,6 +24,7 @@
           v-for="gift in Object.values(listData.gifts)"
           :key="gift.id"
           :gift="gift"
+          @reloadData="load"
         />
       </div>
     </Card>
