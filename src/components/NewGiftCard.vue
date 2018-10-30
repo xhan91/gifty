@@ -46,6 +46,7 @@
         placeholder="Price*" 
         size="large"
         :clearable="true"
+        type="number"
       ></Input>
       <Input 
         v-model="whereToBuy" 
