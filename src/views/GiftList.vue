@@ -18,9 +18,10 @@
       </div>
       <div 
         v-if="listData && listData.gifts"
+        class="giftsContainer"
       >
         <GiftCard
-          style="margin-left: 10px; text-align: center"
+          style=""
           v-for="gift in Object.values(listData.gifts)"
           :key="gift.id"
           :gift="gift"
@@ -46,6 +47,7 @@ import GiftCard from '@/components/GiftCard.vue';
 export default class GiftList extends Vue {
 
   private userData: any = null;
+  private infiLoadId: any = null;
 
   // computed
   get user() {
@@ -80,5 +82,21 @@ export default class GiftList extends Vue {
     this.load();
   }
 
+  private beforeMount() {
+    this.infiLoadId = setInterval(this.load, 5000);
+  }
+
+  private beforeUnmount() {
+    clearInterval(this.infiLoadId);
+  }
+
 }
 </script>
+
+<style lang="stylus" scoped>
+.giftsContainer
+  max-width 100%
+  display flex
+  justify-content flex-start
+  flex-wrap wrap
+</style>

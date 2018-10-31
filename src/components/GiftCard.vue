@@ -1,21 +1,23 @@
 <template>
-  <span @click="handleClick" @mouseenter="handleMouseIn" @mouseleave="handleMouseOut">
-    <div class="hoverButton" v-if="mouseOver">
-      <Button size="large" :disabled="giftStatus === 'taken'">
+  <div style="display: inline-flex; margin-left: 10px">
+    <Card class="card" :class="{taken: gift.taken}">
+      <p slot="title" style="color: white">
+          {{gift.name}}
+      </p>
+      <Button 
+        slot="extra" 
+        :disabled="giftStatus === 'taken'" 
+        :loading="btnLoading" 
+        @click="handleClick"
+        style="transform: translate(0px, -6px)"
+      >
         {{buttonMsg}}
       </Button>
-    </div>
-    <Card class="card" :class="{taken: gift.taken, mouseOver: mouseOver}">
-      <Row class="card-content" type="flex" justify="center">
-        <h1>
-          {{gift.name}}
-        </h1>
-        <p class="subinfo" v-for="key in displayKeys" v-if="gift[key]" :key="key">
-          {{key}}: {{gift[key]}}
-        </p>
-      </Row>
+      <p class="subinfo" v-for="key in displayKeys" v-if="gift[key]" :key="key">
+        {{displayKeyNames[key]}}: <span v-html="processValue(key, gift[key])"></span>
+      </p>
     </Card>
-  </span>
+  </div>
 
 </template>
 
@@ -27,8 +29,16 @@ import { db } from '@/main';
 export default class GiftCard extends Vue {
 
   // data
-  private mouseOver = false;
   private displayKeys = ['price', 'description', 'whereToBuy', 'image', 'link', 'taker'];
+  private displayKeyNames = {
+    price: 'Price',
+    description: 'Description',
+    whereToBuy: 'Where to buy',
+    image: 'Image link',
+    link: 'Online link',
+    taker: 'Taken by',
+  }
+  private btnLoading = false;
 
   // props
   @Prop(Object) private gift: any;
@@ -48,6 +58,10 @@ export default class GiftCard extends Vue {
 
   get listOwnerId() {
     return this.$route.params.userId;
+  }
+
+  get userGiftId() {
+    return `${this.listOwnerId}${this.listId}${this.gift.id}`;
   }
 
   get giftStatus() {
@@ -72,12 +86,19 @@ export default class GiftCard extends Vue {
   }
 
   // methods
-  private handleMouseIn() {
-    this.mouseOver = true;
-  }
-
-  private handleMouseOut() {
-    this.mouseOver = false;
+  private processValue(key: string, rawValue: string) {
+    let value;
+    switch(key) {
+      case 'price':
+        value = `$${rawValue}`;
+        break;
+      case 'link':
+        value = `<a href='${rawValue}'>${rawValue}</a>`;
+        break;
+      default:
+        value = rawValue;
+    }
+    return value;
   }
 
   private async take() {
@@ -89,8 +110,7 @@ export default class GiftCard extends Vue {
       done: false,
     }
     const userGifts = {};
-    const userGiftId = `${this.listOwnerId}${this.listId}${this.gift.id}`;
-    userGifts[userGiftId] = giftRef;
+    userGifts[this.userGiftId] = giftRef;
     const data = { gifts: userGifts };
     const userPromise = this.userDataRef.set(data, { merge: true });
 
@@ -105,13 +125,30 @@ export default class GiftCard extends Vue {
 
     await Promise.all([userPromise, giftPromise]);
 
+    this.btnLoading = false;
     this.$emit('reloadData');
   }
 
   private async putBack() {
-    // delete user
+    // delete user attributes
+    let data = await this.userDataRef.get().then(res => res.data()).catch(() => null);
+    if (data === null) return;
+    delete data!.gifts[this.userGiftId]
+    const userPromise = this.userDataRef.set(data!);
 
-    // delete 
+    // delete gift attributes
+    const gifts = {};
+    gifts[this.gift.id] = { taken: false, taker: null, takerId: null };
+    const giftLists = {};
+    giftLists[this.listId] = { gifts };
+    const giftPromise = db.collection('users').doc(this.listOwnerId).set({
+      giftLists
+    }, {merge: true});
+
+    await Promise.all([userPromise, giftPromise]);
+
+    this.btnLoading = false;
+    this.$emit('reloadData');
   }
 
   private edit() {
@@ -119,6 +156,7 @@ export default class GiftCard extends Vue {
   }
 
   private handleClick() {
+    this.btnLoading = true;
     switch(this.giftStatus) {
       case 'take':
         this.take();
@@ -140,7 +178,6 @@ export default class GiftCard extends Vue {
   width 300px
   height 250px
   margin 5px
-  display inline-flex
   background-color #2d8cf0
   transition 0.2s
 
@@ -153,30 +190,9 @@ export default class GiftCard extends Vue {
 .card:active
   background-color #2b85e4
 
-.card-content
-  width 268px
-  height 218px
-  flex-direction column
-  font-size 16px  
-  color #ffffff
-
 .ivu-input-wrapper
   margin-bottom 15px
 
 .subinfo
   color #cdcdcd
-
-.mouseOver
-  opacity 0.1
-
-.hoverButton
-  display flex
-  height 250px
-  width 300px
-  margin 5px 5px 5px 15px
-  justify-content center
-  align-items center
-  position absolute
-  opacity 1
-  z-index 10
 </style>
