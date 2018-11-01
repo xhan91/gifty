@@ -1,5 +1,13 @@
 <template>
   <div class="giftList">
+    <Button
+      class="shareBtn"
+      type="primary"
+      v-clipboard:copy="shareLink"
+      v-clipboard:success="shareLinkCopied"
+    >
+      Share the list
+    </Button>
     <Breadcrumb style="text-align: left; padding: 10px">
       <BreadcrumbItem>Home</BreadcrumbItem>
       <BreadcrumbItem v-if="listData">{{ listData.name }}</BreadcrumbItem>
@@ -69,6 +77,14 @@ export default class GiftList extends Vue {
     return db.collection('users').doc(this.listOwnerId);
   }
 
+  get shareLink() {
+    return window.location.href;
+  }
+
+  private shareLinkCopied() {
+    this.$Message.success({content: 'Share link copied to clipboard! Share this link to your friends!', duration: 3});
+  }
+
   private load() {
     this.userDataRef.get().then((doc) => {
       if (doc.exists) {
@@ -101,4 +117,8 @@ export default class GiftList extends Vue {
   display flex
   justify-content flex-start
   flex-wrap wrap
+
+.shareBtn
+  position absolute
+  right 50px
 </style>

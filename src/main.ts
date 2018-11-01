@@ -9,8 +9,10 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 import './plugins/iview.js';
+import VueClipboard from 'vue-clipboard2';
 
 Vue.config.productionTip = false;
+Vue.use(VueClipboard);
 
 let app: object;
 const init = () => {
