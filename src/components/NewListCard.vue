@@ -72,11 +72,15 @@ export default class NewListCard extends Vue {
     return this.$store.getters.getUser;
   }
 
+  get modalRef(): any {
+    return this.$refs.modalInstance;
+  }
+
   // methods
   private async createNewList() {
     if (!this.name || !this.eventDate) {
       this.err = 'Please fill the fields with *.';
-      this.$refs.modalInstance.buttonLoading = false;
+      this.modalRef.buttonLoading = false;
       return;
     }
 

@@ -149,6 +149,10 @@ export default class GiftCard extends Vue {
     return msg[this.giftStatus];
   }
 
+  get modalRef(): any {
+    return this.$refs.modalInstance;
+  }
+
   // methods
   private processValue(key: string, rawValue: string) {
     let value;
@@ -173,15 +177,15 @@ export default class GiftCard extends Vue {
       gift: this.gift.id,
       done: false,
     }
-    const userGifts = {};
+    const userGifts: any = {};
     userGifts[this.userGiftId] = giftRef;
     const data = { gifts: userGifts };
     const userPromise = this.userDataRef.set(data, { merge: true });
 
     // set gift
-    const gifts = {};
+    const gifts: any = {};
     gifts[this.gift.id] = { taken: true, taker: this.user.displayName, takerId: this.user.uid };
-    const giftLists = {};
+    const giftLists: any = {};
     giftLists[this.listId] = { gifts };
     const giftPromise = db.collection('users').doc(this.listOwnerId).set({
       giftLists
@@ -201,9 +205,9 @@ export default class GiftCard extends Vue {
     const userPromise = this.userDataRef.set(data!);
 
     // delete gift attributes
-    const gifts = {};
+    const gifts: any = {};
     gifts[this.gift.id] = { taken: false, taker: null, takerId: null };
-    const giftLists = {};
+    const giftLists: any = {};
     giftLists[this.listId] = { gifts };
     const giftPromise = db.collection('users').doc(this.listOwnerId).set({
       giftLists
@@ -223,12 +227,12 @@ export default class GiftCard extends Vue {
   private async editSave() {
     if (!this.name || !this.price) {
       this.err = 'Please fill the fields with *.';
-      this.$refs.modalInstance.buttonLoading = false;
+      this.modalRef.buttonLoading = false;
       return;
     }
 
     const giftId = this.gift.id;
-    const gifts = {};
+    const gifts: any = {};
     gifts[giftId] = {
       name: this.name,
       description: this.description,
@@ -237,7 +241,7 @@ export default class GiftCard extends Vue {
       link: this.link,
       image: this.image,
     };
-    const giftLists: IGiftLists = {};
+    const giftLists: any = {};
     giftLists[this.listId!] = { gifts };
     const data = { giftLists };
 

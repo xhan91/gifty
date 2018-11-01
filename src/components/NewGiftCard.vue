@@ -96,16 +96,20 @@ export default class NewGiftCard extends Vue {
     return this.$store.getters.getUser;
   }
 
+  get modalRef(): any {
+    return this.$refs.modalInstance;
+  }
+
   // methods
   private async createNewList() {
     if (!this.name || !this.price) {
       this.err = 'Please fill the fields with *.';
-      this.$refs.modalInstance.buttonLoading = false;
+      this.modalRef.buttonLoading = false;
       return;
     }
 
     const newGiftId = String(+ new Date());
-    const gifts = {};
+    const gifts: any = {};
     gifts[newGiftId] = {
       id: newGiftId,
       name: this.name,

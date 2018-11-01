@@ -55,6 +55,7 @@ export default class GiftList extends Vue {
 
   private userData: any = null;
   private infiLoadId: any = null;
+  private myThis: any = this;
 
   // computed
   get user() {
@@ -82,7 +83,7 @@ export default class GiftList extends Vue {
   }
 
   private shareLinkCopied() {
-    this.$Message.success({content: 'Share link copied to clipboard! Share this link to your friends!', duration: 3});
+    this.myThis.$Message.success({content: 'Share link copied to clipboard! Share this link to your friends!', duration: 3});
   }
 
   private load() {
