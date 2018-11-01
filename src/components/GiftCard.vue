@@ -17,8 +17,61 @@
         {{displayKeyNames[key]}}: <span v-html="processValue(key, gift[key])"></span>
       </p>
     </Card>
+    <Modal
+      v-model="isEdit"
+      title="New List"
+      :mask-closable="false"
+      :loading="true"
+      ref="modalInstance"
+      @on-ok="editSave"
+      @on-cancel="editCancel"
+    >
+      <div style="margin-bottom: 15px">
+        <p>Please provide the details of your new gift below.</p>
+        <p v-if="err" style="color: red">
+          {{ err }}
+        </p>
+      </div>
+      <Input 
+        v-model="name" 
+        placeholder="Name of the gift*" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="description" 
+        placeholder="Description"
+        size="large"
+        type="textarea" 
+        :autosize="{minRows: 2,maxRows: 5}"
+      ></Input>
+      <Input
+        v-model="price" 
+        placeholder="Price*" 
+        size="large"
+        :clearable="true"
+        prefix="logo-usd"
+      ></Input>
+      <Input 
+        v-model="whereToBuy" 
+        placeholder="Where to buy" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="link" 
+        placeholder="Link to the gift" 
+        size="large"
+        :clearable="true"
+      ></Input>
+      <Input 
+        v-model="image" 
+        placeholder="Image of the gift" 
+        size="large"
+        :clearable="true"
+      ></Input>
+    </Modal>
   </div>
-
 </template>
 
 <script lang="ts">
@@ -39,6 +92,17 @@ export default class GiftCard extends Vue {
     taker: 'Taken by',
   }
   private btnLoading = false;
+
+  // for edit
+  private isEdit = false;
+  private name = '';
+  private description = '';
+  private price = '';
+  private whereToBuy = '';
+  private link = '';
+  private image = '';
+
+  private err = '';
 
   // props
   @Prop(Object) private gift: any;
@@ -93,7 +157,7 @@ export default class GiftCard extends Vue {
         value = `$${rawValue}`;
         break;
       case 'link':
-        value = `<a href='${rawValue}'>${rawValue}</a>`;
+        value = `<a style="color: white" href='${rawValue}'>${rawValue}</a>`;
         break;
       default:
         value = rawValue;
@@ -152,7 +216,39 @@ export default class GiftCard extends Vue {
   }
 
   private edit() {
+    this.btnLoading = false;
+    this.isEdit = true;
+  }
 
+  private async editSave() {
+    if (!this.name || !this.price) {
+      this.err = 'Please fill the fields with *.';
+      this.$refs.modalInstance.buttonLoading = false;
+      return;
+    }
+
+    const giftId = this.gift.id;
+    const gifts = {};
+    gifts[giftId] = {
+      name: this.name,
+      description: this.description,
+      price: this.price,
+      whereToBuy: this.whereToBuy,
+      link: this.link,
+      image: this.image,
+    };
+    const giftLists: IGiftLists = {};
+    giftLists[this.listId!] = { gifts };
+    const data = { giftLists };
+
+    await this.userDataRef.set(data, {merge: true});
+    this.isEdit = false;
+    this.$emit('reloadData');
+  }
+
+  private editCancel() {
+    this.isEdit = false;
+    this.resetEditForm();
   }
 
   private handleClick() {
@@ -170,6 +266,21 @@ export default class GiftCard extends Vue {
     }
   }
 
+  private resetEditForm() {
+    this.name = this.gift.name;
+    this.description = this.gift.description;
+    this.price = this.gift.price;
+    this.whereToBuy = this.gift.whereToBuy;
+    this.link = this.gift.link;
+    this.image = this.gift.image;
+    this.err = '';
+  }
+
+  // lifecycle
+  private created() {
+    this.resetEditForm();
+  }
+
 }
 </script>
 
@@ -185,11 +296,8 @@ export default class GiftCard extends Vue {
   background-color #19be6b
   
 .card:hover
-  background-color #5cadff
+  filter brightness(120%)
   
-.card:active
-  background-color #2b85e4
-
 .ivu-input-wrapper
   margin-bottom 15px
 

@@ -41,12 +41,12 @@
         type="textarea" 
         :autosize="{minRows: 2,maxRows: 5}"
       ></Input>
-      <Input 
+      <Input
         v-model="price" 
         placeholder="Price*" 
         size="large"
         :clearable="true"
-        type="number"
+        prefix="logo-usd"
       ></Input>
       <Input 
         v-model="whereToBuy" 

@@ -4,13 +4,13 @@
       <BreadcrumbItem>Home</BreadcrumbItem>
       <BreadcrumbItem v-if="listData">{{ listData.name }}</BreadcrumbItem>
     </Breadcrumb>
-    <Card :dis-hover="true" style="text-align: left">
+    <Card :dis-hover="true" style="text-align: left; max-height: calc(100% - 41px); overflow: auto">
       <div 
         v-if="user && user.uid == listOwnerId"
         style="margin-bottom: 20px;"
       >
         <NewGiftCard
-          style="margin-left: 10px; text-align: center"
+          style="margin-left: 10px; text-align: center; cursor: pointer"
           :userDataRef="userDataRef"
           :listId="listId"
           @reloadData="load"
@@ -21,7 +21,6 @@
         class="giftsContainer"
       >
         <GiftCard
-          style=""
           v-for="gift in Object.values(listData.gifts)"
           :key="gift.id"
           :gift="gift"
@@ -86,7 +85,7 @@ export default class GiftList extends Vue {
     this.infiLoadId = setInterval(this.load, 5000);
   }
 
-  private beforeUnmount() {
+  private beforeDestroy() {
     clearInterval(this.infiLoadId);
   }
 
@@ -94,6 +93,9 @@ export default class GiftList extends Vue {
 </script>
 
 <style lang="stylus" scoped>
+.giftList
+  height 100%
+
 .giftsContainer
   max-width 100%
   display flex

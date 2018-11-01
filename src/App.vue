@@ -46,10 +46,13 @@ export default class App extends Vue {
   -moz-osx-font-smoothing grayscale
   text-align center
   color #2c3e50
+  
+html
+  background-color #f5f7f9
 
 #content
   height calc(100vh - 133px)
-  padding 50px
+  padding 50px 50px 0px 50px
 
 .menu a
   text-decoration none
