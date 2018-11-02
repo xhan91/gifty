@@ -122,4 +122,11 @@ export default class GiftList extends Vue {
 .shareBtn
   position absolute
   right 50px
+
+@media only screen and (max-width: 432px) {
+  .shareBtn {
+    right 20px
+    top 68px
+  }
+}
 </style>

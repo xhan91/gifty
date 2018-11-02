@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Layout>
-      <Header>
+      <Header class="header-responsize">
         <Menu mode="horizontal" theme="dark" active-name="1" class="menu" v-if="user">
           <MenuItem name="home">
             <router-link to="/">Home</router-link>
@@ -68,4 +68,14 @@ html
 .avatar img
   border-radius 50%
   margin-left 5px
+
+@media only screen and (max-width: 432px) {
+  #content {
+    padding 0px
+  }
+
+  .header-responsize {
+    padding 0px 20px 0px 0px !important
+  }
+}
 </style>
